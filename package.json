@@ -4,7 +4,7 @@
   "description": "blog list",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
@@ -22,9 +22,14 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "lodash": "^4.17.21",
     "mongoose": "^6.0.5"
   },
   "devDependencies": {
+    "jest": "^27.1.1",
     "nodemon": "^2.0.12"
+  },
+  "jest": {
+    "testEnviroment": "node"
   }
 }
