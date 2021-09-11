@@ -1,0 +1,29 @@
+### 
+POST http://localhost:3003/api/blogs
+content-Type: application/json
+
+{
+    "title": "hnam 2",
+    "author": "nam 2",
+    "url": "hnam12"
+}
+
+###
+GET http://localhost:3003/api/blogs
+
+
+###
+DELETE http://localhost:3003/api/blogs/613c83034263abccc5c40725
+
+
+### invalid id
+DELETE http://localhost:3003/api/blogs/613c83034263abccc
+
+
+### update
+PUT http://localhost:3003/api/blogs/613c82ec4263abccc5c40720
+content-Type: application/json
+
+{
+    "likes": 12
+}
