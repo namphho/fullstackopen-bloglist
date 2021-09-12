@@ -5,8 +5,9 @@ require("express-async-errors");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
-const blogRouters = require("./controllers/blogs")
-const middleware = require('./utils/middleware')
+const blogRouters = require("./controllers/blogs");
+const userRouters = require("./controllers/users");
+const middleware = require("./utils/middleware");
 
 //connect to DB
 logger.info(config.MONGODB_URI);
@@ -23,7 +24,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/blogs", blogRouters);
+app.use("/api/users", userRouters);
 app.use(middleware.errorHandler);
 
-
-module.exports = app
+module.exports = app;
