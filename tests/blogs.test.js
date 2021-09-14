@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 const app = require("../app");
 const helper = require("./test_helper");
 const api = supertest(app);
 
-beforeEach(async () => {
+beforeAll(async () => {
   await Blog.deleteMany({});
   const blogObjects = helper.initialBlogs.map((m) => new Blog(m));
   const promisedArray = blogObjects.map((o) => o.save());
@@ -34,6 +35,22 @@ describe("where there is some blogs saved", () => {
 });
 
 describe("aditional new blog", () => {
+  var token;
+  beforeEach(async () => {
+    await User.deleteMany({});
+    const user = {
+      username: "user10",
+      name: "name10",
+      password: "1234",
+    };
+    await api.post("/api/users").send(user);
+    const loginResp = await api
+      .post("/api/login")
+      .send({ username: "user10", password: "1234" })
+      .expect(200);
+    token = loginResp.body.token;
+  });
+
   test("save blog successfully", async () => {
     const newBlog = {
       title: "Test Title",
@@ -41,9 +58,13 @@ describe("aditional new blog", () => {
       url: "http://example.com/example.pdf",
       likes: 5,
     };
+
     await api
       .post("/api/blogs")
       .send(newBlog)
+      .set({
+        Authorization: `Bearer ${token}`,
+      })
       .expect(201)
       .expect("Content-Type", /application\/json/);
     const blogsAtEnd = await helper.blogsInDb();
@@ -60,6 +81,9 @@ describe("aditional new blog", () => {
     };
     const savedBlog = await api
       .post("/api/blogs")
+      .set({
+        Authorization: `Bearer ${token}`,
+      })
       .send(newBlog)
       .expect(201)
       .expect("Content-Type", /application\/json/);
@@ -70,7 +94,25 @@ describe("aditional new blog", () => {
     const newBlog = {
       url: "http://example.com/example.pdf",
     };
-    await api.post("/api/blogs").send(newBlog).expect(400);
+    await api
+      .post("/api/blogs")
+      .set({
+        Authorization: `Bearer ${token}`,
+      })
+      .send(newBlog)
+      .expect(400);
+  });
+
+  test("save blog without authorized", async () => {
+    const newBlog = {
+      title: "Test Title",
+      author: "Hnam",
+      url: "http://example.com/example.pdf",
+    };
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(401);
   });
 });
 
@@ -111,7 +153,6 @@ describe("update of the blogs", () => {
       .send({ likes: 13 })
       .expect(200);
 
-    
     expect(updatedBlog.body.likes).toEqual(13);
   });
 });
