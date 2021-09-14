@@ -43,6 +43,18 @@ describe("create user", () => {
     const result = await api.post("/api/users").send(user).expect(400);
     expect(result.body.error).toContain("dup");
   });
+
+  test("add user sucess", async () => {
+    await User.deleteMany({});
+    const user = {
+      username: "user10",
+      name: "name10",
+      password: "1234",
+    };
+
+    const result = await api.post("/api/users").send(user).expect(200);
+    expect(result.body.username).toEqual("user10")
+  });
 });
 
 afterAll(() => {
