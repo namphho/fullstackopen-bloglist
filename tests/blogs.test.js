@@ -6,7 +6,7 @@ const app = require("../app");
 const helper = require("./test_helper");
 const api = supertest(app);
 
-beforeEach(async () => {
+beforeAll(async () => {
   await Blog.deleteMany({});
   const blogObjects = helper.initialBlogs.map((m) => new Blog(m));
   const promisedArray = blogObjects.map((o) => o.save());
